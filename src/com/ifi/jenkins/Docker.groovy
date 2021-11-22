@@ -9,12 +9,12 @@ class Docker implements Serializable {
         this.script = script;
     }
 
-    def build(String imageName) {
+    void build(String imageName) {
         def buildCommand = "docker build -t ${imageName} ."
         this.script.sh(script: buildCommand, returnStdout: true)
     }
 
-    def login() {
+    void login() {
         withVault(configuration: [timeout: 60, vaultCredentialId: 'vault-jenkins-approle', vaultUrl: 'http://34.93.200.114:8200'],
             vaultSecrets: [
                 [path: 'secrets/creds/nstung219-dockerhub', engineVersion: 1, secretValues: [
