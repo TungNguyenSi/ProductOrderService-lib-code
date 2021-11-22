@@ -11,7 +11,6 @@ class Docker implements Serializable {
 
     def build(String imageName) {
         def buildCommand = "docker build -t ${imageName} ."
-        echo buildCommand
         this.script.sh(script: buildCommand, returnStdout: true)
     }
 
