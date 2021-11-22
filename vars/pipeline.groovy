@@ -1,5 +1,5 @@
 def call(Map args) {
-    node ("agent1") {
+    node {
         def docker = args.jsl.com.ifi.jenkins.Docker.new(this)
         def git = args.jsl.com.ifi.jenkins.Git.new(this)
     }
