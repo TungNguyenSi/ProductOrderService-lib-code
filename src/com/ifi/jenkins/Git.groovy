@@ -16,7 +16,6 @@ class Git implements Serializable{
     }
 
     void clone(def repo, def githubUsername, def githubPassword){
-        script.sh("curl -u ${githubUsername}:${githubPassword} ${repo}")
-        script.sh("git clone ${repo}")
+        script.sh("git clone https://${githubUsername}:${githubPassword}@github.com/${repo}")
     }
 }

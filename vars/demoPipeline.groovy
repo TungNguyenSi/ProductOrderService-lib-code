@@ -11,7 +11,7 @@ def call(Map args){
                         [envVar: 'githubPassword', vaultKey: 'password']]
                     ]
                 ]) {
-                git.clone("https://github.com/TungNguyenSi/ProductOrderService.git", githubUsername, githubPassword)
+                git.clone("TungNguyenSi/ProductOrderService.git", githubUsername, githubPassword)
             }
 
         }
