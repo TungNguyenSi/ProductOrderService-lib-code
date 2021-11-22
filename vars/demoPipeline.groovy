@@ -1,6 +1,6 @@
 #!/usr/bin/env groovy
 def call(Map args){
-    node {
+    node ("agent1"){
         def docker = args.jsl.com.ifi.jenkins.Docker.new(this)
         def git = args.jsl.com.ifi.jenkins.Git.new(this)
     }
