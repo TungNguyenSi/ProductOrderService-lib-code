@@ -1,3 +1,4 @@
+#!/usr/bin/env groovy
 def call(Map args) {
     node {
         def docker = args.jsl.com.ifi.jenkins.Docker.new(this)
