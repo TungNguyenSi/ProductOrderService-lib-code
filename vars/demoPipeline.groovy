@@ -8,17 +8,15 @@ def call(Map args){
 }
 
 def buildImage() {
-    node ("agent1") {
-        stage("pull code") {
-            steps {
-                git.clone("https://github.com/TungNguyenSi/ProductOrderService.git")
-            }
-        }
-        stage("build image") {
-            steps {
-                docker.build("gcr.io/jenkins-demo-330307/product-order-service:release-1.0")
-            }
-        }
-    }
+    git.clone("https://github.com/TungNguyenSi/ProductOrderService.git")
+    docker.build("gcr.io/jenkins-demo-330307/product-order-service:release-1.0")
+//    node ("agent1") {
+//        stage("pull code") {
+//            git.clone("https://github.com/TungNguyenSi/ProductOrderService.git")
+//        }
+//        stage("build image") {
+//            docker.build("gcr.io/jenkins-demo-330307/product-order-service:release-1.0")
+//        }
+//    }
     return this
 }
