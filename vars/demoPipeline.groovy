@@ -7,7 +7,7 @@ def call(Map args){
     return this
 }
 
-def buildImage(Map args) {
+def buildImage() {
     node ("agent1") {
         stage("pull code") {
             steps {
