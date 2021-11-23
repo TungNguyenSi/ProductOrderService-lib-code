@@ -23,7 +23,7 @@ def call(Map args) {
     node ("kubepod") {
       def git = new Git()
       stage("deploy") {
-        git.clone("TungNguyenSi/ProductOrderService.git")
+//        git.clone("TungNguyenSi/ProductOrderService.git")
         k8s.auth()
         k8s.createMongoSecrets()
         sh "ls"
