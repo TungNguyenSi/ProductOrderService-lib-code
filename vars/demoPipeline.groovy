@@ -24,8 +24,11 @@ def call(Map args) {
       def git = new Git()
       stage("deploy") {
 //        git.clone("TungNguyenSi/ProductOrderService.git")
-        k8s.auth()
-        k8s.createMongoSecrets()
+//        k8s.auth()
+//        k8s.createMongoSecrets()
+        sh "ls"
+        sh "pwd"
+        sh "cd ~"
         sh "ls"
         sh "kubectl apply -f mongo-deploy.yaml"
 //        k8s.apply("-f mongo-deploy.yaml")
