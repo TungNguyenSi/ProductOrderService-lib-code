@@ -1,29 +1,28 @@
 #!/usr/bin/env groovy
-
 import com.ifi.jenkins.Docker
+import com.ifi.jenkins.K8s
 
-def call(Map args){
-    node ("agent1"){
-        def docker = new Docker()
-//        def git = args.jsl.com.ifi.jenkins.Git.new(this)
-        stage("build image") {
-            docker.build("product-order-service:release-1.0")
-        }
-        stage("push image") {
-            docker.push("gcr.io/jenkins-demo-330307", "product-order-service:release-1.0")
-        }
+def call(Map args) {
+  def docker = new Docker()
+  def k8s = new K8s()
+  node("agent1") {
+    stage("build image") {
+      docker.build("product-order-service:release-1.0")
     }
-    return this
-}
+    stage("push image") {
+      docker.push("gcr.io/jenkins-demo-330307", "product-order-service:release-1.0")
+    }
+    stage("deploy") {
+      k8s.auth()
+      k8s.createMongoSecrets()
+      k8s.apply("-f mongo-deploy.yaml")
+      k8s.apply("-f product-order-service-deploy.yaml")
+      def mongoVerify = k8s.verifyRunningPods("mongo")
+      def serverVerify = k8s.verifyRunningPods("server")
 
-//def buildImage() {
-//    node ("agent1") {
-//        stage("pull code") {
-//            git.clone("https://github.com/TungNguyenSi/ProductOrderService.git")
-//        }
-//        stage("build image") {
-//            docker.build("gcr.io/jenkins-demo-330307/product-order-service:release-1.0")
-//        }
-//    }
-//    return this
-//}
+      if (mongoVerify == false || serverVerify == false){
+        currentBuild.result = "FAILURE"
+      }
+    }
+  }
+}
