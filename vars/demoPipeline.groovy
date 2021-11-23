@@ -3,15 +3,15 @@ import com.ifi.jenkins.Docker
 import com.ifi.jenkins.K8s
 
 def call(Map args) {
-  def docker = new Docker()
+  def gDocker = new Docker()
   def k8s = new K8s()
   node("agent1") {
     docker.image('nstung219/agent-image:1.2').inside {
       stage("build image") {
-        docker.build("product-order-service:release-1.0")
+        gDocker.build("product-order-service:release-1.0")
       }
       stage("push image") {
-        docker.push("gcr.io/jenkins-demo-330307", "product-order-service:release-1.0")
+        gDocker.push("gcr.io/jenkins-demo-330307", "product-order-service:release-1.0")
       }
     }
     stage("deploy") {
