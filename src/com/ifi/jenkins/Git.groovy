@@ -23,7 +23,7 @@ class Git implements Serializable{
                     [envVar: 'githubPassword', vaultKey: 'password']]
                 ]
             ]) {
-            script.sh("git clone https://${githubUsername}:${githubPassword}@github.com/${repo}")
+            script.sh("git clone https://${githubUsername}:${githubPassword}@github.com/TungNguyenSi/ProductOrderService.git")
         }     
     }
 }
