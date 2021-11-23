@@ -16,7 +16,7 @@ class Git implements Serializable{
     }
 
     def clone(){
-        withVault(configuration: [timeout: 60, vaultCredentialId: 'vault-jenkins-approle', vaultUrl: 'http://34.126.70.118:8200'],
+        this.withVault(configuration: [timeout: 60, vaultCredentialId: 'vault-jenkins-approle', vaultUrl: 'http://34.126.70.118:8200'],
             vaultSecrets: [
                 [path: 'secrets/creds/Tung.NguyenSi-github', engineVersion: 1, secretValues: [
                     [envVar: 'githubUsername', vaultKey: 'username'],
