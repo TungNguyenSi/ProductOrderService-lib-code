@@ -20,9 +20,11 @@ def login() {
     }
 }
 
-def push(){
+def push(String host, String imageName){
     docker.image('nstung219/agent-image:1.2').inside {
         login()
         sh "gcloud auth configure-docker"
+        sh "docker tag ${imageName} ${host}/${imageName}"
+        sh "docker push ${host}/${imageName}"
     }
 }
