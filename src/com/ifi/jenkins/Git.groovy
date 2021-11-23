@@ -1,21 +1,21 @@
 package com.ifi.jenkins
+void checkout(def branch) {
+    sh("git checkout ${branch}");
+}
 
-class Git implements Serializable{
-    private final def script
+boolean isMain(){
+    env.BRANCH_NAME == 'main'
+}
 
-    Git (def script) {
-        this.script = script
+void clone(def repo){
+    withVault(configuration: [timeout: 60, vaultCredentialId: 'vault-jenkins-approle', vaultUrl: 'http://34.126.70.118:8200'],
+        vaultSecrets: [
+            [path: 'secrets/creds/Tung.NguyenSi-github', engineVersion: 1, secretValues: [
+                [envVar: 'githubUsername', vaultKey: 'username'],
+                [envVar: 'githubPassword', vaultKey: 'password']]
+            ]
+        ]) {
+        sh("git clone https://\${githubUsername}:\${githubPassword}@github.com/${repo}")
     }
 
-    void checkout(def branch) {
-        this.script.sh("git checkout ${branch}");
-    }
-
-    boolean isMain(){
-        script.env.BRANCH_NAME == 'main'
-    }
-
-    void clone(def repo, def githubUsername, def githubPassword){
-        script.sh("git clone https://${githubUsername}:${githubPassword}@github.com/${repo}")
-    }
 }
