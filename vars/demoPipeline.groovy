@@ -25,15 +25,10 @@ def call(Map args) {
     node ("kubepod") {
       stage("deploy") {
         checkout scm
-//        k8s.auth()
-//        k8s.createMongoSecrets()
-        sh "ls"
-        sh "pwd"
-        sh "cd ~"
-        sh "ls"
-        sh "kubectl apply -f mongo-deploy.yaml"
-//        k8s.apply("-f mongo-deploy.yaml")
-//        k8s.apply("-f product-order-service-deploy.yaml")
+        k8s.auth()
+        k8s.createMongoSecrets()
+        k8s.apply("-f mongo-deploy.yaml")
+        k8s.apply("-f product-order-service-deploy.yaml")
         def mongoVerify = k8s.verifyRunningPods("mongo")
         def serverVerify = k8s.verifyRunningPods("server")
 
