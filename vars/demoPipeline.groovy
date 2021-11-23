@@ -1,6 +1,7 @@
 #!/usr/bin/env groovy
 import com.ifi.jenkins.Docker
 import com.ifi.jenkins.K8s
+import com.ifi.jenkins.Git
 
 def call(Map args) {
   def gDocker = new Docker()
@@ -20,7 +21,9 @@ def call(Map args) {
     containerTemplate(name: 'jnlp', image: 'nstung219/k8s-agent:1.5')
   ]) {
     node ("kubepod") {
+      def git = new Git()
       stage("deploy") {
+        git.clone()
         k8s.auth()
         k8s.createMongoSecrets()
         sh "ls"
