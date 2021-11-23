@@ -15,6 +15,6 @@ void clone(def repo){
         [envVar: 'githubPassword', vaultKey: 'password']]
       ]
     ]) {
-    sh('git clone git@"\${githubUsername}":"\${githubPassword}"@github.com/${repo}')
+    sh("git clone git@\${githubUsername}:\${githubPassword}@github.com/${repo}")
   }
 }
