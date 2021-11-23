@@ -19,7 +19,7 @@ def login(String path) {
 }
 
 def push(String host, String imageName) {
-  login("'secrets/creds/nstung219-dockerhub'")
+  login("secrets/creds/nstung219-dockerhub")
   sh "gcloud auth configure-docker"
   sh "docker tag ${imageName} ${host}/${imageName}"
   sh "docker push ${host}/${imageName}"
