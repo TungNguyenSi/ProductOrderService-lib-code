@@ -2,7 +2,7 @@
 package com.ifi.jenkins
 
 def build(String imageName) {
-    GDocker.image('nstung219/agent-image:1.2').inside {
+    docker.image('nstung219/agent-image:1.2').inside {
         def buildCommand = "docker build -t ${imageName} ."
         sh(script: buildCommand, returnStdout: true)
     }
@@ -21,7 +21,7 @@ def login() {
 }
 
 def push(){
-    Docker.image('nstung219/agent-image:1.2').inside {
+    docker.image('nstung219/agent-image:1.2').inside {
         login()
         sh "gcloud auth configure-docker"
     }
