@@ -9,8 +9,8 @@ def call(Map args) {
   def git = new Git()
   node("agent1") {
     docker.image('nstung219/agent-image:1.2').inside {
-      git.checkoutSCM()
       stage("build image") {
+        git.checkoutSCM()
         gDocker.build("product-order-service:release-1.0")
       }
       stage("push image") {
