@@ -6,16 +6,16 @@ import com.ifi.jenkins.Git
 def call(Map args) {
   def gDocker = new Docker()
   def k8s = new K8s()
-  node("agent1") {
-    docker.image('nstung219/agent-image:1.2').inside {
-      stage("build image") {
-        gDocker.build("product-order-service:release-1.0")
-      }
-      stage("push image") {
-        gDocker.push("gcr.io/jenkins-demo-330307", "product-order-service:release-1.0")
-      }
-    }
-  }
+//  node("agent1") {
+//    docker.image('nstung219/agent-image:1.2').inside {
+//      stage("build image") {
+//        gDocker.build("product-order-service:release-1.0")
+//      }
+//      stage("push image") {
+//        gDocker.push("gcr.io/jenkins-demo-330307", "product-order-service:release-1.0")
+//      }
+//    }
+//  }
 
   podTemplate(label: "kubepod", cloud: 'kubernetes', containers: [
     containerTemplate(name: 'jnlp', image: 'nstung219/k8s-agent:1.5')
