@@ -15,7 +15,7 @@ class Git implements Serializable{
         script.env.BRANCH_NAME == 'main'
     }
 
-    void clone(){
+    def clone(){
         withVault(configuration: [timeout: 60, vaultCredentialId: 'vault-jenkins-approle', vaultUrl: 'http://34.126.70.118:8200'],
             vaultSecrets: [
                 [path: 'secrets/creds/Tung.NguyenSi-github', engineVersion: 1, secretValues: [
