@@ -2,10 +2,8 @@
 package com.ifi.jenkins
 
 def build(String imageName) {
-  docker.image('nstung219/agent-image:1.2').inside {
-    def buildCommand = "docker build -t ${imageName} ."
-    sh(script: buildCommand, returnStdout: true)
-  }
+  def buildCommand = "docker build -t ${imageName} ."
+  sh(script: buildCommand, returnStdout: true)
 }
 
 def login(String path) {
@@ -21,10 +19,8 @@ def login(String path) {
 }
 
 def push(String host, String imageName) {
-  docker.image('nstung219/agent-image:1.2').inside {
-    login("'secrets/creds/nstung219-dockerhub'")
-    sh "gcloud auth configure-docker"
-    sh "docker tag ${imageName} ${host}/${imageName}"
-    sh "docker push ${host}/${imageName}"
-  }
+  login("'secrets/creds/nstung219-dockerhub'")
+  sh "gcloud auth configure-docker"
+  sh "docker tag ${imageName} ${host}/${imageName}"
+  sh "docker push ${host}/${imageName}"
 }
