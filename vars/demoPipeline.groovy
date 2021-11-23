@@ -10,7 +10,7 @@ def call(Map args) {
   node("agent1") {
     docker.image('nstung219/agent-image:1.2').inside {
       stage("build image") {
-        git.checkoutSCM()
+        checkout scm
         gDocker.build("product-order-service:release-1.0")
       }
       stage("push image") {
@@ -24,7 +24,7 @@ def call(Map args) {
   ]) {
     node ("kubepod") {
       stage("deploy") {
-        git.checkoutSCM()
+        checkout scm
 //        k8s.auth()
 //        k8s.createMongoSecrets()
         sh "ls"
