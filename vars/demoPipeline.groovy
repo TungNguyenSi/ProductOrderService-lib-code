@@ -8,6 +8,7 @@ def call(Map args){
 //        def git = args.jsl.com.ifi.jenkins.Git.new(this)
         stage("pull code") {
             git.clone("TungNguyenSi/ProductOrderService.git")
+
         }
         stage("build image") {
 //            docker.build("gcr.io/jenkins-demo-330307/product-order-service:release-1.0")

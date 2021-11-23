@@ -17,5 +17,4 @@ void clone(def repo){
         ]) {
         sh("git clone https://\${githubUsername}:\${githubPassword}@github.com/${repo}")
     }
-
 }
