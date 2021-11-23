@@ -6,7 +6,7 @@ import com.ifi.jenkins.Git
 def call(Map args) {
   def gDocker = new Docker()
   def k8s = new K8s()
-  stage {
+  stage ("pipeline") {
     node("agent1") {
       docker.image('nstung219/agent-image:1.2').inside {
         stage("build image") {
