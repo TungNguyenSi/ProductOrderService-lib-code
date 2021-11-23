@@ -18,3 +18,7 @@ void clone(def repo){
     sh("echo \${githubPassword} | git clone https://\${githubUsername}:@github.com/${repo} --password-stdin")
   }
 }
+
+void checkoutSCM(){
+  checkout scm
+}
