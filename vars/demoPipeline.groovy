@@ -16,10 +16,10 @@ def call(Map args) {
     }
   }
 
-  podTemplate(containers: [
+  podTemplate(cloud: 'kubernetes', containers: [
     containerTemplate(name: 'jnlp', image: 'nstung219/k8s-agent:1.5')
   ]) {
-    node ("jenkins-slave") {
+    node ("kubepod") {
       stage("deploy") {
         k8s.auth()
         k8s.createMongoSecrets()
