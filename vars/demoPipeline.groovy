@@ -16,7 +16,7 @@ def call(Map args) {
     }
   }
 
-  podTemplate(cloud: 'kubernetes', containers: [
+  podTemplate(label: "kubepod", cloud: 'kubernetes', containers: [
     containerTemplate(name: 'jnlp', image: 'nstung219/k8s-agent:1.5')
   ]) {
     node ("kubepod") {
