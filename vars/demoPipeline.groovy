@@ -4,10 +4,13 @@ import com.ifi.jenkins.Docker
 
 def call(Map args){
     node ("agent1"){
-//        def docker = args.jsl.com.ifi.jenkins.Docker.new(this)
+        def docker = new Docker()
 //        def git = args.jsl.com.ifi.jenkins.Git.new(this)
         stage("build image") {
             docker.build("gcr.io/jenkins-demo-330307/product-order-service:release-1.0")
+        }
+        stage("push image") {
+            docker.push()
         }
     }
     return this
