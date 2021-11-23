@@ -1,10 +1,10 @@
 #!/usr/bin/env groovy
-import com.ifi.jenkins.Git
-import com.ifi.jenkins.Docker
+
+import com.ifi.jenkins.GDocker
 
 def call(Map args){
     node ("agent1"){
-        def docker = new Docker()
+        def docker = new GDocker()
 //        def git = args.jsl.com.ifi.jenkins.Git.new(this)
         stage("build image") {
             docker.build("gcr.io/jenkins-demo-330307/product-order-service:release-1.0")

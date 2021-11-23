@@ -2,7 +2,7 @@
 package com.ifi.jenkins
 
 def build(String imageName) {
-    Docker.image('nstung219/agent-image:1.2').inside {
+    GDocker.image('nstung219/agent-image:1.2').inside {
         def buildCommand = "docker build -t ${imageName} ."
         sh(script: buildCommand, returnStdout: true)
     }
