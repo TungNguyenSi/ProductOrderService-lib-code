@@ -6,10 +6,10 @@ def build(String imageName) {
   sh(script: buildCommand, returnStdout: true)
 }
 
-def login(String path) {
+def login() {
   withVault(configuration: [timeout: 60, vaultCredentialId: 'vault-jenkins-approle', vaultUrl: 'http://34.126.70.118:8200'],
     vaultSecrets: [
-      [path: path, engineVersion: 1, secretValues: [
+      [path: "secrets/creds/nstung219-dockerhub", engineVersion: 1, secretValues: [
         [envVar: 'dockerHubUsername', vaultKey: 'username'],
         [envVar: 'dockerHubPassword', vaultKey: 'password']]
       ]
@@ -19,7 +19,7 @@ def login(String path) {
 }
 
 def push(String host, String imageName) {
-  login("secrets/creds/nstung219-dockerhub")
+  login()
   sh "gcloud auth configure-docker"
   sh "docker tag ${imageName} ${host}/${imageName}"
   sh "docker push ${host}/${imageName}"

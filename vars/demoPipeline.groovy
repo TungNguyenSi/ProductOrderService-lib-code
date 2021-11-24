@@ -26,16 +26,29 @@ def call(Map args) {
       stage("deploy") {
         checkout scm
         k8s.auth()
-        k8s.createMongoSecrets()
+        createMongoSecrets(k8s)
         k8s.apply("-f mongo-deploy.yaml")
         k8s.apply("-f product-order-service-deploy.yaml")
+
         def mongoVerify = k8s.verifyRunningPods("mongo")
         def serverVerify = k8s.verifyRunningPods("server")
-
         if (mongoVerify == false || serverVerify == false){
           currentBuild.result = "FAILURE"
         }
       }
     }
+  }
+}
+
+def createMongoSecrets(K8s k8s){
+  withVault(
+    configuration: [timeout: 60, vaultCredentialId: 'vault-jenkins-approle', vaultUrl: 'http://34.126.70.118:8200'],
+    vaultSecrets: [
+      [path: 'secrets/creds/mongodb', secretValues: [
+        [envVar: 'mongoUser', vaultKey: 'username'],
+        [envVar: 'mongoPassword', vaultKey: 'password']]
+      ],
+    ]) {
+    k8s.createSecretsFromLiteral("mongodb-secret", ["username=\${mongoUser}", "password=\${mongoPassword}"])
   }
 }

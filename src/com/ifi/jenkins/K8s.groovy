@@ -17,17 +17,17 @@ def auth() {
   }
 }
 
-def createMongoSecrets() {
-  withVault(
-    configuration: [timeout: 60, vaultCredentialId: 'vault-jenkins-approle', vaultUrl: 'http://34.126.70.118:8200'],
-    vaultSecrets: [
-      [path: 'secrets/creds/mongodb', secretValues: [
-        [envVar: 'mongoUser', vaultKey: 'username'],
-        [envVar: 'mongoPassword', vaultKey: 'password']]
-      ],
-    ]) {
-    sh "kubectl create secret generic mongodb-secret --save-config --dry-run=client --from-literal=username=\${mongoUser} --from-literal=password=\${mongoPassword} -o yaml | kubectl apply -f -"
+def createSecretsFromLiteral(String secretName, List<String> secrets) {
+  StringBuilder sb = new StringBuilder();
+  sb.append("kubectl create secret generic ${secretName} --save-config --dry-run=client")
+  for (String secret : secrets) {
+    sb.append(" --from-literal=${secret}")
   }
+  sb.append(" -o yaml | kubectl apply -f -")
+  sh(sb.toString())
+}
+
+def createMongoSecrets() {
 
 }
 
