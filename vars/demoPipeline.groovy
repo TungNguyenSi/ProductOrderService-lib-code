@@ -72,6 +72,8 @@ def call() {
           }
         }
       }
+    }
+  }
 
 
 //  podTemplate(kanikoPodTemplate()) {
