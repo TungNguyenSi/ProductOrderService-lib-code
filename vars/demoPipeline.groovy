@@ -20,7 +20,12 @@ def call() {
     annotations: [
       podAnnotation(key: 'vault.hashicorp.com/agent-inject', value: 'true'),
       podAnnotation(key: 'vault.hashicorp.com/role', value: 'webapp'),
-      podAnnotation(key: 'vault.hashicorp.com/agent-inject-secrets-gcloud.json', value: 'secrets/creds/gcloud-service-account')],
+      podAnnotation(key: 'vault.hashicorp.com/agent-inject-secrets-gcloud', value: 'secrets/creds/gcloud-service-account'),
+      podAnnotation(key: 'vault.hashicorp.com/agent-inject-template-gcloud', value: '| ' +
+        '{{- with secret "secrets/creds/mongodb" -}}\n' +
+        ' data\n' +
+        '{{- end}}')
+    ],
     cloud: 'kubernetes',
     label: "test",
     containers: [
