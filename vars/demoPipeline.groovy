@@ -27,7 +27,7 @@ def call() {
       podAnnotation(key: 'vault.hashicorp.com/agent-inject-secret-gcloud.json', value: 'secrets/creds/gcloud-service-account'),
       podAnnotation(key: 'vault.hashicorp.com/agent-inject-template-gcloud', value: '| ' +
         '{{- with secret "secrets/creds/gcloud-service-account" -}} ' +
-        '  export GOOGLE_APPLICATION_CREDENTIALS="{{ .Data.data }}"' +
+        '  "{{ .Data.data }}"' +
         '{{- end -}}')
     ],
     cloud: 'kubernetes',
@@ -36,8 +36,8 @@ def call() {
       containerTemplate(
         image: 'gcr.io/kaniko-project/executor:debug', name: 'kaniko',
         envVars: [envVar(key: 'GOOGLE_APPLICATION_CREDENTIALS', value: '/vault/secrets/gcloud.json')],
-        command: '/bin/bash -c',
-        args: 'source /vault/secrets/gcloud.json'
+        command: 'sleep',
+        args: '999999'
       )],
     serviceAccount: 'vault-auth'
   ) {
