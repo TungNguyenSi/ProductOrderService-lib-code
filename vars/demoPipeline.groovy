@@ -31,10 +31,10 @@ def call() {
         containers:
         - name: kaniko
           image: gcr.io/kaniko-project/executor:debug
-          args:
-          - "--dockerfile=Dockerfile"
-          - "--context=gs:'pwd'"
-          - "--destination=gcr.io/jenkins-demo-330307/product-order-service:release-1.0"
+//          args:
+//          - "--dockerfile=Dockerfile"
+//          - "--context=gs:'pwd'"
+//          - "--destination=gcr.io/jenkins-demo-330307/product-order-service:release-1.0"
           env:
           - name: GOOGLE_APPLICATION_CREDENTIALS
             value: /vault/secrets/gcloud.json
