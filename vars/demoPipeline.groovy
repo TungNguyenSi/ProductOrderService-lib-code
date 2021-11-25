@@ -17,7 +17,7 @@ def call() {
 //      }
 //    }
 //  }
-  podTemplate(cloud: "kubernetes", yaml: '''
+  podTemplate(label: "imageAgent", cloud: "kubernetes", yaml: '''
       apiVersion: v1
       kind: Pod
       metadata:
@@ -40,6 +40,7 @@ def call() {
             value: /vault/secrets/gcloud.json
         restartPolicy: Never
     ''') {
+    node("imageAgent")
   }
 
   podTemplate(label: "kubepod", cloud: 'kubernetes', containers: [
