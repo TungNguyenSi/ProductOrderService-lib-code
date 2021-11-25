@@ -17,8 +17,7 @@ def call() {
 //      }
 //    }
 //  }
-  podTemplate(label: "kubepod", cloud: 'kubernetes', containers: [
-    containerTemplate(yaml: """
+  podTemplate(yaml: """
       apiVersion: v1
       kind: Pod
       metadata:
@@ -42,9 +41,7 @@ def call() {
         - name: kaniko-secret
           secret:
             secretName: kaniko-secret
-    """)
-  ]) {
-
+    """) {
   }
 
   podTemplate(label: "kubepod", cloud: 'kubernetes', containers: [
