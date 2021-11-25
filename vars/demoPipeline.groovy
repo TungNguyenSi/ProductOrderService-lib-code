@@ -45,7 +45,7 @@ def call() {
 //    }
 //  }
 
-  podTemplate(yaml: kanikoPodTemplate()) {
+  podTemplate(kanikoPodTemplate()) {
     node ("test") {
       container(name: 'kaniko', shell: '/busybox/sh') {
         checkout scm
