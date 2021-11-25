@@ -17,6 +17,9 @@ def call() {
 //    }
 //  }
 
+
+
+//  podTemplate(label: "kubepod", cloud: 'kubernetes', containers: [
   podTemplate(
     annotations: [
       podAnnotation(key: 'vault.hashicorp.com/agent-inject', value: 'true'),
@@ -25,19 +28,17 @@ def call() {
       podAnnotation(key: 'vault.hashicorp.com/agent-inject-template-gcloud', value: '| ' +
         '{{- with secret "secrets/creds/gcloud-service-account" -}} ' +
         '{ \n' +
-        '{{' +
-        ' .Data.type ' +
-        ' .Data.project_id ' +
-        ' .Data.private_key_id ' +
-        ' .Data.private_key ' +
-        ' .Data.client_mail ' +
-        ' .Data.client_id ' +
-        ' .Data.auth_uri ' +
-        ' .Data.token_uri ' +
-        ' .Data.auth_provider_x509_cert_url ' +
-        ' .Data.client_x509_cert_url' +
+        ' {{ .Data.type }} }}' +
+        ' {{ .Data.project_id }}' +
+        ' {{ .Data.private_key_id }}' +
+        ' {{ .Data.private_key }}' +
+        ' {{ .Data.client_mail }}' +
+        ' {{ .Data.client_id }}' +
+        ' {{ .Data.auth_uri }}' +
+        ' {{ .Data.token_uri }}' +
+        ' {{ .Data.auth_provider_x509_cert_url }}' +
+        ' {{ .Data.client_x509_cert_url }}' +
         '\n }' +
-        '}}' +
         '{{- end -}}')
     ],
     cloud: 'kubernetes',
@@ -60,9 +61,6 @@ def call() {
       }
     }
   }
-
-
-//  podTemplate(label: "kubepod", cloud: 'kubernetes', containers: [
 //    containerTemplate(name: 'jnlp', image: 'nstung219/k8s-agent:1.5')
 //  ]) {
 //    node ("kubepod") {
