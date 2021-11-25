@@ -92,31 +92,31 @@ def createMongoSecrets(K8s k8s){
 
 def kanikoPodTemplate() {
   def yaml = '''
-    apiVersion: v1
-    kind: Pod
-    spec:
-      template:
-        metadata:
-          annotations:
-            vault.hashicorp.com/agent-inject: "true"
-            vault.hashicorp.com/role: "webapp"
-            vault.hashicorp.com/agent-inject-secrets-mongodb: "secrets/creds/gcloud-service-account"
-            vault.hashicorp.com/agent-inject-template-mongodb: |
-              {{- with secret "secrets/creds/mongodb" -}}
-                {{ .Data.data }}"
-              {{- end}}
-        spec:
-          containers:
-          - name: kaniko
-            image: gcr.io/kaniko-project/executor:debug
-            imagePullPolicy: Always
-            command:
-            - sleep
-             args:
-            - 9999999
-            env:
-            - name: GOOGLE_APPLICATION_CREDENTIALS
-              value: /vault/secrets/gcloud.json
-    '''.stripMargin()
+    |apiVersion: v1
+    |kind: Pod
+    |spec:
+    |  template:
+    |    metadata:
+    |      annotations:
+    |        vault.hashicorp.com/agent-inject: "true"
+    |        vault.hashicorp.com/role: "webapp"
+    |        vault.hashicorp.com/agent-inject-secrets-mongodb: "secrets/creds/gcloud-service-account"
+    |        vault.hashicorp.com/agent-inject-template-mongodb: |
+    |          {{- with secret "secrets/creds/mongodb" -}}
+    |            {{ .Data.data }}"
+    |          {{- end}}
+    |    spec:
+    |      containers:
+    |     - name: kaniko
+    |        image: gcr.io/kaniko-project/executor:debug
+    |        imagePullPolicy: Always
+    |        command:
+    |        - sleep
+    |         args:
+    |        - 9999999
+    |        env:
+    |        - name: GOOGLE_APPLICATION_CREDENTIALS
+    |          value: /vault/secrets/gcloud.json
+    |'''.stripMargin()
   return yaml
 }
