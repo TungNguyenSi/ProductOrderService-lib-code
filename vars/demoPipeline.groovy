@@ -21,29 +21,33 @@ def call() {
       container(name: "kaniko", shell: "/busybox/sh") {
         checkout scm
         sh 'ls -la'
+        sh '''#!/busybox/sh
+            echo "FROM jenkins/inbound-agent:latest" > Dockerfile
+            /kaniko/executor --context `pwd` --destination=gcr.io/jenkins-demo-330307/product-order-service:release-1.0
+        '''
       }
     }
   }
 
-  podTemplate(label: "kubepod", cloud: 'kubernetes', containers: [
-    containerTemplate(name: 'jnlp', image: 'nstung219/k8s-agent:1.5')
-  ]) {
-    node ("kubepod") {
-      stage("deploy") {
-        checkout scm
-        k8s.auth()
-        createMongoSecrets(k8s)
-        k8s.apply("-f mongo-deploy.yaml")
-        k8s.apply("-f product-order-service-deploy.yaml")
-
-        def mongoVerify = k8s.verifyRunningPods("mongo")
-        def serverVerify = k8s.verifyRunningPods("server")
-        if (mongoVerify == false || serverVerify == false){
-          currentBuild.result = "FAILURE"
-        }
-      }
-    }
-  }
+//  podTemplate(label: "kubepod", cloud: 'kubernetes', containers: [
+//    containerTemplate(name: 'jnlp', image: 'nstung219/k8s-agent:1.5')
+//  ]) {
+//    node ("kubepod") {
+//      stage("deploy") {
+//        checkout scm
+//        k8s.auth()
+//        createMongoSecrets(k8s)
+//        k8s.apply("-f mongo-deploy.yaml")
+//        k8s.apply("-f product-order-service-deploy.yaml")
+//
+//        def mongoVerify = k8s.verifyRunningPods("mongo")
+//        def serverVerify = k8s.verifyRunningPods("server")
+//        if (mongoVerify == false || serverVerify == false){
+//          currentBuild.result = "FAILURE"
+//        }
+//      }
+//    }
+//  }
 }
 
 def createMongoSecrets(K8s k8s){
