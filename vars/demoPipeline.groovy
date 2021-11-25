@@ -91,7 +91,7 @@ def createMongoSecrets(K8s k8s){
 }
 
 def kanikoPodTemplate() {
-  def yamlString = '''
+  def yamlString = """
     |apiVersion: v1
     |kind: Pod
     |spec:
@@ -117,6 +117,6 @@ def kanikoPodTemplate() {
     |        env:
     |        - name: GOOGLE_APPLICATION_CREDENTIALS
     |          value: /vault/secrets/gcloud.json
-    |'''.stripMargin()
+    |""".stripMargin()
   return "yaml: $yamlString"
 }
