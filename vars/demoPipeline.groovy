@@ -27,7 +27,7 @@ def call() {
       podAnnotation(key: 'vault.hashicorp.com/agent-inject-secret-gcloud.json', value: 'secrets/creds/gcloud-service-account'),
       podAnnotation(key: 'vault.hashicorp.com/agent-inject-template-gcloud', value: '| ' +
         '{{- with secret "secrets/creds/gcloud-service-account" -}} ' +
-        '   {{{ .Data.data }}}' +
+        '  export GOOGLE_APPLICATION_CREDENTIALS="{{ .Data.data }}"' +
         '{{- end -}}')
     ],
     cloud: 'kubernetes',
@@ -36,14 +36,15 @@ def call() {
       containerTemplate(
         image: 'gcr.io/kaniko-project/executor:debug', name: 'kaniko',
         envVars: [envVar(key: 'GOOGLE_APPLICATION_CREDENTIALS', value: '/vault/secrets/gcloud.json')],
-        command: "sleep",
-        args: "999999"
+        command: ['/bin/bash', '-c'],
+        args: ['source /vault/secrets/gcloud.json']
       )],
     serviceAccount: 'vault-auth'
   ) {
     node ("test") {
       container(name: 'kaniko', shell: '/busybox/sh') {
         checkout scm
+//        sh 'echo "{" > temp.json && grep -v "data:" /vault/secrets/gcloud.json >> temp.json && mv temp.json /vault/secrets/gcloud.json'
         sh '''#!/busybox/sh
             /kaniko/executor --context `pwd` --dockerfile `pwd`/Dockerfile --destination gcr.io/jenkins-demo-330307/product-order-service:release-1.0
         '''
