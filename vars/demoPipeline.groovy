@@ -17,75 +17,37 @@ def call() {
 //    }
 //  }
 
-//  podTemplate(
-//    annotations: [
-//      podAnnotation(key: 'vault.hashicorp.com/agent-inject', value: 'true'),
-//      podAnnotation(key: 'vault.hashicorp.com/role', value: 'webapp'),
-//      podAnnotation(key: 'vault.hashicorp.com/agent-inject-secrets-gcloud', value: 'secrets/creds/gcloud-service-account'),
-//      podAnnotation(key: 'vault.hashicorp.com/agent-inject-template-gcloud', value: '| {{- with secret "secrets/creds/gcloud-service-account" -}} "{{ .Data.data }}" {{- end -}}')
-//    ],
-//    cloud: 'kubernetes',
-//    label: "test",
-//    containers: [
-//      containerTemplate(
-//        image: 'gcr.io/kaniko-project/executor:debug', name: 'kaniko',
-//        envVars: [envVar(key: 'GOOGLE_APPLICATION_CREDENTIALS', value: '/vault/secrets/gcloud.json')],
-//        command: "sleep",
-//        args: "999999"
-//      )],
-//    serviceAccount: 'vault-auth'
-//  ) {
-//    node ("test") {
-//      container(name: 'kaniko', shell: '/busybox/sh') {
-//        checkout scm
-//        sh '''#!/busybox/sh
-//            /kaniko/executor --context `pwd` --dockerfile `pwd`/Dockerfile --destination gcr.io/jenkins-demo-330307/product-order-service:release-1.0
-//        '''
-//      }
-//    }
-//  }
-
-  podTemplate(yaml: '''
-    apiVersion: v1
-    kind: Pod
-    spec:
-      containers:
-      - name: maven
-        image: maven:3.8.1-jdk-8
-        command:
-        - sleep
-        args:
-        - 99d
-      - name: golang
-        image: golang:1.16.5
-        command:
-        - sleep
-        args:
-        - 99d
-''') {
-    node(POD_LABEL) {
-      stage('Get a Maven project') {
-        git 'https://github.com/jenkinsci/kubernetes-plugin.git'
-        container('maven') {
-          stage('Build a Maven project') {
-            sh 'mvn -B -ntp clean install'
-          }
-        }
+  podTemplate(
+    annotations: [
+      podAnnotation(key: 'vault.hashicorp.com/agent-inject', value: 'true'),
+      podAnnotation(key: 'vault.hashicorp.com/role', value: 'webapp'),
+      podAnnotation(key: 'vault.hashicorp.com/agent-inject-secrets-gcloud', value: 'secrets/creds/gcloud-service-account'),
+      podAnnotation(key: 'vault.hashicorp.com/agent-inject-template-gcloud', value: '| ' +
+        '{{- with secret "secrets/creds/gcloud-service-account" -}} ' +
+        '   "{{ .Data.data }}" ' +
+        '{{- end -}}')
+    ],
+    cloud: 'kubernetes',
+    label: "test",
+    containers: [
+      containerTemplate(
+        image: 'gcr.io/kaniko-project/executor:debug', name: 'kaniko',
+        envVars: [envVar(key: 'GOOGLE_APPLICATION_CREDENTIALS', value: '/vault/secrets/gcloud.json')],
+        command: "sleep",
+        args: "999999"
+      )],
+    serviceAccount: 'vault-auth'
+  ) {
+    node ("test") {
+      container(name: 'kaniko', shell: '/busybox/sh') {
+        checkout scm
+        sh '''#!/busybox/sh
+            /kaniko/executor --context `pwd` --dockerfile `pwd`/Dockerfile --destination gcr.io/jenkins-demo-330307/product-order-service:release-1.0
+        '''
       }
     }
   }
 
-
-//  podTemplate(kanikoPodTemplate()) {
-//    node ("test") {
-//      container(name: 'kaniko', shell: '/busybox/sh') {
-//        checkout scm
-//        sh '''#!/busybox/sh
-//            /kaniko/executor --context `pwd` --dockerfile `pwd`/Dockerfile --destination gcr.io/jenkins-demo-330307/product-order-service:release-1.0
-//        '''
-//      }
-//    }
-//  }
 
 //  podTemplate(label: "kubepod", cloud: 'kubernetes', containers: [
 //    containerTemplate(name: 'jnlp', image: 'nstung219/k8s-agent:1.5')
@@ -121,33 +83,44 @@ def createMongoSecrets(K8s k8s){
   }
 }
 
-def kanikoPodTemplate() {
-  def yamlString = """
-    |apiVersion: v1
-    |kind: Pod
-    |spec:
-    |  template:
-    |    metadata:
-    |      annotations:
-    |        vault.hashicorp.com/agent-inject: "true"
-    |        vault.hashicorp.com/role: "webapp"
-    |        vault.hashicorp.com/agent-inject-secrets-mongodb: "secrets/creds/gcloud-service-account"
-    |        vault.hashicorp.com/agent-inject-template-mongodb: |
-    |          {{- with secret "secrets/creds/mongodb" -}}
-    |            {{ .Data.data }}"
-    |          {{- end}}
-    |    spec:
-    |      containers:
-    |     - name: kaniko
-    |        image: gcr.io/kaniko-project/executor:debug
-    |        imagePullPolicy: Always
-    |        command:
-    |        - sleep
-    |         args:
-    |        - 9999999
-    |        env:
-    |        - name: GOOGLE_APPLICATION_CREDENTIALS
-    |          value: /vault/secrets/gcloud.json
-    |""".stripMargin()
-  return "yaml: $yamlString"
-}
+//def kanikoPodTemplate() {
+//  def yamlString = """
+//    |apiVersion: v1
+//    |kind: Pod
+//    |spec:
+//    |  template:
+//    |    metadata:
+//    |      annotations:
+//    |        vault.hashicorp.com/agent-inject: "true"
+//    |        vault.hashicorp.com/role: "webapp"
+//    |        vault.hashicorp.com/agent-inject-secrets-mongodb: "secrets/creds/gcloud-service-account"
+//    |        vault.hashicorp.com/agent-inject-template-mongodb: |
+//    |          {{- with secret "secrets/creds/mongodb" -}}
+//    |            {{ .Data.data }}"
+//    |          {{- end}}
+//    |    spec:
+//    |      containers:
+//    |     - name: kaniko
+//    |        image: gcr.io/kaniko-project/executor:debug
+//    |        imagePullPolicy: Always
+//    |        command:
+//    |        - sleep
+//    |         args:
+//    |        - 9999999
+//    |        env:
+//    |        - name: GOOGLE_APPLICATION_CREDENTIALS
+//    |          value: /vault/secrets/gcloud.json
+//    |""".stripMargin()
+//  return "yaml: $yamlString"
+//}
+
+//  podTemplate(kanikoPodTemplate()) {
+//    node ("test") {
+//      container(name: 'kaniko', shell: '/busybox/sh') {
+//        checkout scm
+//        sh '''#!/busybox/sh
+//            /kaniko/executor --context `pwd` --dockerfile `pwd`/Dockerfile --destination gcr.io/jenkins-demo-330307/product-order-service:release-1.0
+//        '''
+//      }
+//    }
+//  }
