@@ -17,27 +17,28 @@ def call() {
 //    }
 //  }
   podTemplate(label: "imageAgent", cloud: "kubernetes", yaml: '''
-      apiVersion: v1
-      kind: Pod
-      metadata:
-        name: kaniko
-      spec:
-        template: 
-          annotations:
-            vault.hashicorp.com/agent-inject: "true"
-            vault.hashicorp.com/role: "webapp"
-            vault.hashicorp.com/agent-inject-secrets-gcloud.json: "secrets/creds/gcloud-service-account"
-        containers:
-        - name: kaniko
-          image: gcr.io/kaniko-project/executor:debug
-//          args:
-//          - "--dockerfile=Dockerfile"
-//          - "--context=gs:'pwd'"
-//          - "--destination=gcr.io/jenkins-demo-330307/product-order-service:release-1.0"
-          env:
-          - name: GOOGLE_APPLICATION_CREDENTIALS
-            value: /vault/secrets/gcloud.json
-        restartPolicy: Never
+kind: Pod
+spec:
+  containers:
+  - name: kaniko
+    image: gcr.io/kaniko-project/executor:debug
+    imagePullPolicy: Always
+    command:
+    - sleep
+    args:
+    - 9999999
+    volumeMounts:
+      - name: jenkins-docker-cfg
+        mountPath: /kaniko/.docker
+  volumes:
+  - name: jenkins-docker-cfg
+    projected:
+      sources:
+      - secret:
+          name: docker-credentials
+          items:
+            - key: .dockerconfigjson
+              path: config.json
     ''') {
 
     node("imageAgent") {
