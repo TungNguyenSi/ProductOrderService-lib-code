@@ -43,3 +43,7 @@ def verifyRunningPods(String deploymentName, String statement){
 
   return verify != ""
 }
+
+sh '''#!/busybox/sh
+            echo "FROM jenkins/inbound-agent:latest" > Dockerfile
+            /kaniko/executor --context `pwd` --destination=gcr.io/jenkins-demo-330307/product-order-service:release-1.0
