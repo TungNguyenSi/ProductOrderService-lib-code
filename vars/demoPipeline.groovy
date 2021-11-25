@@ -16,7 +16,7 @@ def call() {
 //      }
 //    }
 //  }
-  podTemplate(annotations: [podAnnotation(key: 'vault.hashicorp.com/agent-inject', value: 'true'), podAnnotation(key: 'vault.hashicorp.com/role', value: 'webapp'), podAnnotation(key: 'vault.hashicorp.com/agent-inject-secrets-gcloud.json', value: 'secrets/creds/gcloud-service-account')], cloud: 'kubernetes', label: "test", containers: [containerTemplate(image: 'gcr.io/kaniko-project/executor:latest', name: 'kaniko', workingDir: '/home/jenkins/agent')], serviceAccount: 'vault-auth') {
+  podTemplate(annotations: [podAnnotation(key: 'vault.hashicorp.com/agent-inject', value: 'true'), podAnnotation(key: 'vault.hashicorp.com/role', value: 'webapp'), podAnnotation(key: 'vault.hashicorp.com/agent-inject-secrets-gcloud.json', value: 'secrets/creds/gcloud-service-account')], cloud: 'kubernetes', label: "test", containers: [containerTemplate(image: 'gcr.io/kaniko-project/executor:debug', name: 'kaniko', workingDir: '/home/jenkins/agent')], serviceAccount: 'vault-auth') {
     node ("test") {
       container("kaniko") {
         checkout scm
