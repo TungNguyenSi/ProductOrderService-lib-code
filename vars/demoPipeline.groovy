@@ -16,17 +16,17 @@ def call() {
 //      }
 //    }
 //  }
-  podTemplate(label: "imageAgent", cloud: "kubernetes", yaml: '''
-      apiVersion: v1
-      kind: Pod
-      metadata:
-        name: kaniko
-      spec:
-        containers:
-        - name: kaniko
-          image: gcr.io/kaniko-project/executor:debug
-        restartPolicy: Never
-    ''') {
+  podTemplate(label: "imageAgent", yaml: """
+    apiVersion: v1
+    kind: Pod
+    metadata:
+      name: kaniko
+    spec:
+      containers:
+      - name: kaniko
+        image: gcr.io/kaniko-project/executor:debug
+      restartPolicy: Never
+  """) {
     node("imageAgent") {
       stage("test") {
         container("kaniko") {
@@ -35,25 +35,25 @@ def call() {
     }
   }
 
-  podTemplate(label: "kubepod", cloud: 'kubernetes', containers: [
-    containerTemplate(name: 'jnlp', image: 'nstung219/k8s-agent:1.5')
-  ]) {
-    node ("kubepod") {
-      stage("deploy") {
-        checkout scm
-        k8s.auth()
-        createMongoSecrets(k8s)
-        k8s.apply("-f mongo-deploy.yaml")
-        k8s.apply("-f product-order-service-deploy.yaml")
-
-        def mongoVerify = k8s.verifyRunningPods("mongo")
-        def serverVerify = k8s.verifyRunningPods("server")
-        if (mongoVerify == false || serverVerify == false){
-          currentBuild.result = "FAILURE"
-        }
-      }
-    }
-  }
+//  podTemplate(label: "kubepod", cloud: 'kubernetes', containers: [
+//    containerTemplate(name: 'jnlp', image: 'nstung219/k8s-agent:1.5')
+//  ]) {
+//    node ("kubepod") {
+//      stage("deploy") {
+//        checkout scm
+//        k8s.auth()
+//        createMongoSecrets(k8s)
+//        k8s.apply("-f mongo-deploy.yaml")
+//        k8s.apply("-f product-order-service-deploy.yaml")
+//
+//        def mongoVerify = k8s.verifyRunningPods("mongo")
+//        def serverVerify = k8s.verifyRunningPods("server")
+//        if (mongoVerify == false || serverVerify == false){
+//          currentBuild.result = "FAILURE"
+//        }
+//      }
+//    }
+//  }
 }
 
 def createMongoSecrets(K8s k8s){
