@@ -36,8 +36,8 @@ def call() {
       containerTemplate(
         image: 'gcr.io/kaniko-project/executor:debug', name: 'kaniko',
         envVars: [envVar(key: 'GOOGLE_APPLICATION_CREDENTIALS', value: '/vault/secrets/gcloud.json')],
-        command: ['/bin/bash', '-c'],
-        args: ['source /vault/secrets/gcloud.json']
+        command: '/bin/bash -c',
+        args: 'source /vault/secrets/gcloud.json'
       )],
     serviceAccount: 'vault-auth'
   ) {
