@@ -3,20 +3,48 @@ import com.ifi.jenkins.Docker
 import com.ifi.jenkins.K8s
 import com.ifi.jenkins.Git
 
-def call(Map args) {
+def call() {
   def gDocker = new Docker()
   def k8s = new K8s()
-  def git = new Git()
-  node("agent1") {
-    docker.image('nstung219/agent-image:1.2').inside {
-      stage("build image") {
-        checkout scm
-        gDocker.build("product-order-service:release-1.0")
-      }
-      stage("push image") {
-        gDocker.push("gcr.io/jenkins-demo-330307", "product-order-service:release-1.0")
-      }
-    }
+//  node("agent1") {
+//    docker.image('nstung219/agent-image:1.2').inside {
+//      stage("build image") {
+//        checkout scm
+//        gDocker.build("product-order-service:release-1.0")
+//      }
+//      stage("push image") {
+//        gDocker.push("gcr.io/jenkins-demo-330307", "product-order-service:release-1.0")
+//      }
+//    }
+//  }
+  podTemplate(label: "kubepod", cloud: 'kubernetes', containers: [
+    containerTemplate(yaml: """
+      apiVersion: v1
+      kind: Pod
+      metadata:
+        name: kaniko
+      spec:
+        containers:
+        - name: kaniko
+          image: gcr.io/kaniko-project/executor:debug
+          args:
+          - "--dockerfile=Dockerfile"
+          - "--context=gs:'pwd'"
+          - "--destination=gcr.io/jenkins-demo-330307/product-order-service:release-1.0"
+          volumeMounts:
+          - name: kaniko-secret
+            mountPath: /secret
+          env:
+          - name: GOOGLE_APPLICATION_CREDENTIALS
+            value: /secret/kaniko-secret.json
+        restartPolicy: Never
+        volumes:
+        - name: kaniko-secret
+          secret:
+            secretName: kaniko-secret
+    """)
+  ]) {
+
   }
 
   podTemplate(label: "kubepod", cloud: 'kubernetes', containers: [

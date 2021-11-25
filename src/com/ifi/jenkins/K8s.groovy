@@ -17,27 +17,27 @@ def auth() {
   }
 }
 
-def createSecretsFromLiteral(String secretName, List<String> secrets) {
+def createSecretsFromLiteral(String secretName, Map secrets) {
   StringBuilder sb = new StringBuilder();
   sb.append("kubectl create secret generic ${secretName} --save-config --dry-run=client")
-  for (String secret : secrets) {
-    sb.append(" --from-literal=${secret}")
+  for (Map.Entry<String, String> entry : secrets.entrySet()) {
+    sb.append(entry.key + "=" + entry.value)
   }
   sb.append(" -o yaml | kubectl apply -f -")
   sh(sb.toString())
 }
 
-def createMongoSecrets() {
-
+def apply(String fileName) {
+  sh "kubectl apply -f ${fileName}"
 }
 
-def apply(String command) {
-  sh "kubectl apply ${command}"
-}
-
-def verifyRunningPods(String podName){
+def verifyRunningPods(String deploymentName, String statement){
+  def podName = sh (
+    script: "kubectl get pods | grep ${deploymentName} | awk '{print \$1}'",
+    returnStatus: true
+  )
   def verify = sh(
-    script: "kubectl get pods | grep ${podName} | grep Running",
+    script: "kubectl logs ${podName} ${deploymentName} | grep ${statement}",
     returnStatus: true
   )
 
