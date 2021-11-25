@@ -39,10 +39,10 @@ def call() {
             value: /vault/secrets/gcloud.json
         restartPolicy: Never
     ''') {
-    container("kaniko") {
-      node("imageAgent") {
-        stage("test") {
 
+    node("imageAgent") {
+      stage("test") {
+        container("kaniko") {
         }
       }
     }
