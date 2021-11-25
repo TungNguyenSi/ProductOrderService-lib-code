@@ -46,18 +46,18 @@ def call() {
 //  }
 
   podTemplate(yaml: '''
-    apiVersion: v1
-    kind: Pod
-    spec:
-      containers:
-      - name: kaniko
-        image: gcr.io/kaniko-project/executor:debug
-        imagePullPolicy: Always
-        command:
-        - sleep
-        args:
-        - 9999999
-  ''') {
+    |apiVersion: v1
+    |kind: Pod
+    |spec:
+    |  containers:
+    |  - name: kaniko
+    |    image: gcr.io/kaniko-project/executor:debug
+    |    imagePullPolicy: Always
+    |    command:
+    |    - sleep
+    |    args:
+    |    - 9999999
+  '''.stripMargin()) {
     node ("test") {
       container(name: 'kaniko', shell: '/busybox/sh') {
         checkout scm
