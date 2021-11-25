@@ -45,16 +45,45 @@ def call() {
 //    }
 //  }
 
-  podTemplate(kanikoPodTemplate()) {
-    node ("test") {
-      container(name: 'kaniko', shell: '/busybox/sh') {
-        checkout scm
-        sh '''#!/busybox/sh
-            /kaniko/executor --context `pwd` --dockerfile `pwd`/Dockerfile --destination gcr.io/jenkins-demo-330307/product-order-service:release-1.0
-        '''
+  podTemplate(yaml: '''
+    apiVersion: v1
+    kind: Pod
+    spec:
+      containers:
+      - name: maven
+        image: maven:3.8.1-jdk-8
+        command:
+        - sleep
+        args:
+        - 99d
+      - name: golang
+        image: golang:1.16.5
+        command:
+        - sleep
+        args:
+        - 99d
+''') {
+    node(POD_LABEL) {
+      stage('Get a Maven project') {
+        git 'https://github.com/jenkinsci/kubernetes-plugin.git'
+        container('maven') {
+          stage('Build a Maven project') {
+            sh 'mvn -B -ntp clean install'
+          }
+        }
       }
-    }
-  }
+
+
+//  podTemplate(kanikoPodTemplate()) {
+//    node ("test") {
+//      container(name: 'kaniko', shell: '/busybox/sh') {
+//        checkout scm
+//        sh '''#!/busybox/sh
+//            /kaniko/executor --context `pwd` --dockerfile `pwd`/Dockerfile --destination gcr.io/jenkins-demo-330307/product-order-service:release-1.0
+//        '''
+//      }
+//    }
+//  }
 
 //  podTemplate(label: "kubepod", cloud: 'kubernetes', containers: [
 //    containerTemplate(name: 'jnlp', image: 'nstung219/k8s-agent:1.5')
