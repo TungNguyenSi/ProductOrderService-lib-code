@@ -23,6 +23,11 @@ def call() {
       metadata:
         name: kaniko
       spec:
+        template: 
+          annotations:
+            vault.hashicorp.com/agent-inject: "true"
+            vault.hashicorp.com/role: "webapp"
+            vault.hashicorp.com/agent-inject-secrets-gcloud.json: "secrets/creds/gcloud-service-account"
         containers:
         - name: kaniko
           image: gcr.io/kaniko-project/executor:debug
@@ -30,17 +35,10 @@ def call() {
           - "--dockerfile=Dockerfile"
           - "--context=gs:'pwd'"
           - "--destination=gcr.io/jenkins-demo-330307/product-order-service:release-1.0"
-          volumeMounts:
-          - name: kaniko-secret
-            mountPath: /secret
           env:
           - name: GOOGLE_APPLICATION_CREDENTIALS
-            value: /secret/kaniko-secret.json
+            value: /vault/secrets/gcloud.json
         restartPolicy: Never
-        volumes:
-        - name: kaniko-secret
-          secret:
-            secretName: kaniko-secret
     """) {
   }
 
