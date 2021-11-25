@@ -1,7 +1,6 @@
 #!/usr/bin/env groovy
 import com.ifi.jenkins.Docker
 import com.ifi.jenkins.K8s
-import com.ifi.jenkins.Git
 
 def call() {
   def gDocker = new Docker()
@@ -40,9 +39,11 @@ def call() {
             value: /vault/secrets/gcloud.json
         restartPolicy: Never
     ''') {
-    node("imageAgent") {
-      stage("test") {
+    container("kaniko") {
+      node("imageAgent") {
+        stage("test") {
 
+        }
       }
     }
   }
