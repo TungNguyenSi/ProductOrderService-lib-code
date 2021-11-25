@@ -25,17 +25,19 @@ def call() {
     label: "test",
     containers: [
       containerTemplate(
-        image: 'gcr.io/kaniko-project/executor:debug', name: 'kaniko')],
+        image: 'gcr.io/kaniko-project/executor:debug', name: 'kaniko',
         envVars: [envVar(key: 'GOOGLE_APPLICATION_CREDENTIALS', value: 'vault/secrests/gcloud.json')],
+        args: "--destination gcr.io/jenkins-demo-330307/product-order-service:release-1.0"
+      )],
     serviceAccount: 'vault-auth'
   ) {
     node ("test") {
       container(name: 'kaniko', shell: '/busybox/sh') {
         checkout scm
         sh '''#!/busybox/sh
-            /kaniko/executor --context `pwd` --dockerfile `pwd`/Dockerfile --no-push
+            /kaniko/executor --context `pwd` --dockerfile `pwd`/Dockerfile
         '''
-//        --destination gcr.io/jenkins-demo-330307/product-order-service:release-1.0
+//
       }
     }
   }
