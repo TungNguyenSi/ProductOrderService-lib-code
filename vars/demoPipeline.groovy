@@ -45,19 +45,7 @@ def call() {
 //    }
 //  }
 
-  podTemplate(yaml: '''
-    |apiVersion: v1
-    |kind: Pod
-    |spec:
-    |  containers:
-    |  - name: kaniko
-    |    image: gcr.io/kaniko-project/executor:debug
-    |    imagePullPolicy: Always
-    |    command:
-    |    - sleep
-    |    args:
-    |    - 9999999
-  '''.stripMargin()) {
+  podTemplate(kanikoPodTemplate()) {
     node ("test") {
       container(name: 'kaniko', shell: '/busybox/sh') {
         checkout scm
@@ -100,4 +88,21 @@ def createMongoSecrets(K8s k8s){
     ]) {
     k8s.createSecretsFromLiteral("mongodb-secret", ["username=\${mongoUser}", "password=\${mongoPassword}"])
   }
+}
+
+def kanikoPodTemplate() {
+  def yaml = '''
+    |apiVersion: v1
+    |kind: Pod
+    |spec:
+    |  containers:
+    |  - name: kaniko
+    |    image: gcr.io/kaniko-project/executor:debug
+    |    imagePullPolicy: Always
+    |    command:
+    |    - sleep
+    |    args:
+    |    - 9999999
+    |'''.stripMargin()
+  return yaml
 }
