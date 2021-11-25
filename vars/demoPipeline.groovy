@@ -17,7 +17,7 @@ def call() {
 //      }
 //    }
 //  }
-  podTemplate(yaml: '''
+  podTemplate(cloud: "kubernetes", yaml: '''
       apiVersion: v1
       kind: Pod
       metadata:
