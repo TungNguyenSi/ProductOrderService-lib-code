@@ -20,10 +20,8 @@ def call() {
     node ("kaniko") {
       container(name: "kaniko", shell: "/busybox/sh") {
         checkout scm
-        sh 'ls -la'
         sh '''#!/busybox/sh
-            echo "FROM jenkins/inbound-agent:latest" > Dockerfile
-            /kaniko/executor --context `pwd` --destination=gcr.io/jenkins-demo-330307/product-order-service:release-1.0
+            /kaniko/executor --context `pwd` --dockerfile `pwd`/Dockerfile --destination=gcr.io/jenkins-demo-330307/product-order-service:release-1.0
         '''
       }
     }
