@@ -32,8 +32,9 @@ def call() {
       container(name: 'kaniko', shell: '/busybox/sh') {
         checkout scm
         sh '''#!/busybox/sh
-            /kaniko/executor --context `pwd` --dockerfile `pwd`/Dockerfile --destination gcr.io/jenkins-demo-330307/product-order-service:release-1.0
+            /kaniko/executor --context `pwd` --dockerfile `pwd`/Dockerfile --no-push
         '''
+//        --destination gcr.io/jenkins-demo-330307/product-order-service:release-1.0
       }
     }
   }
