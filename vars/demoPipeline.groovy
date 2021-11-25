@@ -25,7 +25,7 @@ def call() {
     label: "test",
     containers: [
       containerTemplate(
-        image: 'gcr.io/kaniko-project/executor:debug', name: 'kaniko', workingDir: '/home/jenkins/agent')],
+        image: 'gcr.io/kaniko-project/executor:debug', name: 'kaniko')],
       serviceAccount: 'vault-auth'
   ) {
     node ("test") {
