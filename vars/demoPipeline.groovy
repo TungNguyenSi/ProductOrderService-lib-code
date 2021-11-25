@@ -91,64 +91,32 @@ def createMongoSecrets(K8s k8s){
 }
 
 def kanikoPodTemplate() {
-//  def yaml = '''
-//    |apiVersion: v1
-//    |kind: Pod
-//    |spec:
-//    |  template:
-//    |    metadata:
-//    |      annotations:
-//    |        vault.hashicorp.com/agent-inject: "true"
-//    |        vault.hashicorp.com/role: "webapp"
-//    |        vault.hashicorp.com/agent-inject-secrets-mongodb: "secrets/creds/gcloud-service-account"
-//    |        vault.hashicorp.com/agent-inject-template-mongodb: |
-//    |          {{- with secret "secrets/creds/mongodb" -}}
-//    |            {{ .Data.data }}"
-//    |          {{- end}}
-//    |    spec:
-//    |      containers:
-//    |     - name: kaniko
-//    |        image: gcr.io/kaniko-project/executor:debug
-//    |        imagePullPolicy: Always
-//    |        command:
-//    |        - sleep
-//    |         args:
-//    |        - 9999999
-//    |        env:
-//    |        - name: GOOGLE_APPLICATION_CREDENTIALS
-//    |          value: /vault/secrets/gcloud.json
-//    |'''.stripMargin()
-  def yaml = '''
-            |apiVersion: v1
-            |kind: Pod
-            |spec:
-            |  containers:
-            |  - name: maven
-            |    image: maven:3.8.1-jdk-8
-            |    command:
-            |    - sleep
-            |    args:
-            |   - 99d
-            |  - name: kaniko
-            |    image: gcr.io/kaniko-project/executor:debug
-            |    command:
-            |    - sleep
-            |    args:
-            |    - 9999999
-            |    volumeMounts:
-            |    - name: kaniko-secret-gcr
-            |      mountPath: /secret
-            |    env:
-            |    - name: GOOGLE_APPLICATION_CREDENTIALS
-            |      value: /secret/kaniko-secret.json  
-            |  restartPolicy: Never
-            |  volumes:
-            |  - name: kaniko-secret-gcr
-            |    secret:
-            |        secretName: kaniko-secret
-            |        items:
-            |        - key: kaniko-secret.json
-            |          path: kaniko-secret.json        
-            |'''.stripMargin()
-  return yaml
+  def yamlString = '''
+    |apiVersion: v1
+    |kind: Pod
+    |spec:
+    |  template:
+    |    metadata:
+    |      annotations:
+    |        vault.hashicorp.com/agent-inject: "true"
+    |        vault.hashicorp.com/role: "webapp"
+    |        vault.hashicorp.com/agent-inject-secrets-mongodb: "secrets/creds/gcloud-service-account"
+    |        vault.hashicorp.com/agent-inject-template-mongodb: |
+    |          {{- with secret "secrets/creds/mongodb" -}}
+    |            {{ .Data.data }}"
+    |          {{- end}}
+    |    spec:
+    |      containers:
+    |     - name: kaniko
+    |        image: gcr.io/kaniko-project/executor:debug
+    |        imagePullPolicy: Always
+    |        command:
+    |        - sleep
+    |         args:
+    |        - 9999999
+    |        env:
+    |        - name: GOOGLE_APPLICATION_CREDENTIALS
+    |          value: /vault/secrets/gcloud.json
+    |'''.stripMargin()
+  return "yaml: $yamlString"
 }
