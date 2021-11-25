@@ -40,7 +40,11 @@ def call() {
             value: /vault/secrets/gcloud.json
         restartPolicy: Never
     ''') {
-    node("imageAgent")
+    node("imageAgent") {
+      stage("test") {
+
+      }
+    }
   }
 
   podTemplate(label: "kubepod", cloud: 'kubernetes', containers: [
