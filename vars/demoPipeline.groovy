@@ -26,7 +26,8 @@ def call() {
     containers: [
       containerTemplate(
         image: 'gcr.io/kaniko-project/executor:debug', name: 'kaniko')],
-      serviceAccount: 'vault-auth'
+        envVars: [envVar(key: 'GOOGLE_APPLICATION_CREDENTIALS', value: 'vault/secrests/gcloud.json')],
+    serviceAccount: 'vault-auth'
   ) {
     node ("test") {
       container(name: 'kaniko', shell: '/busybox/sh') {
