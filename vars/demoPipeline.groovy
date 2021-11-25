@@ -24,17 +24,18 @@ def call() {
       podAnnotation(key: 'vault.hashicorp.com/agent-inject-secret-gcloud.json', value: 'secrets/creds/gcloud-service-account'),
       podAnnotation(key: 'vault.hashicorp.com/agent-inject-template-gcloud', value: '| ' +
         '{{- with secret "secrets/creds/gcloud-service-account" -}} ' +
-//        '{{ {' +
-//        ' .Data.type ' +
-//        ' .Data.project_id ' +
-//        ' .Data.private_key_id ' +
-//        ' .Data.private_key ' +
-//        ' .Data.client_mail ' +
-//        ' .Data.client_id ' +
-//        ' .Data.auth_uri ' +
-//        ' .Data.' +
-//        '} }}' +
-        ' {{ .Data }} ' +
+        '{{ {' +
+        ' .Data.type ' +
+        ' .Data.project_id ' +
+        ' .Data.private_key_id ' +
+        ' .Data.private_key ' +
+        ' .Data.client_mail ' +
+        ' .Data.client_id ' +
+        ' .Data.auth_uri ' +
+        ' .Data.token_uri ' +
+        ' .Data.auth_provider_x509_cert_url ' +
+        ' .Data.client_x509_cert_url' +
+        '} }}' +
         '{{- end -}}')
     ],
     cloud: 'kubernetes',
