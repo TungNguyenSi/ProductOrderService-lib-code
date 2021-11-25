@@ -26,7 +26,7 @@ def call() {
     containers: [
       containerTemplate(
         image: 'gcr.io/kaniko-project/executor:debug', name: 'kaniko',
-        envVars: [envVar(key: 'GOOGLE_APPLICATION_CREDENTIALS', value: 'vault/secrests/gcloud.json')],
+        envVars: [envVar(key: 'GOOGLE_APPLICATION_CREDENTIALS', value: 'vault/secrets/gcloud.json')],
         command: "sleep",
         args: "999999"
       )],
