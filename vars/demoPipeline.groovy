@@ -16,11 +16,22 @@ def call() {
 //      }
 //    }
 //  }
-  podTemplate(annotations: [podAnnotation(key: 'vault.hashicorp.com/agent-inject', value: 'true'), podAnnotation(key: 'vault.hashicorp.com/role', value: 'webapp'), podAnnotation(key: 'vault.hashicorp.com/agent-inject-secrets-gcloud.json', value: 'secrets/creds/gcloud-service-account')], cloud: 'kubernetes', label: "test", containers: [containerTemplate(image: 'gcr.io/kaniko-project/executor:debug', name: 'kaniko', workingDir: '/home/jenkins/agent')], serviceAccount: 'vault-auth') {
+  podTemplate(
+    annotations: [
+      podAnnotation(key: 'vault.hashicorp.com/agent-inject', value: 'true'),
+      podAnnotation(key: 'vault.hashicorp.com/role', value: 'webapp'),
+      podAnnotation(key: 'vault.hashicorp.com/agent-inject-secrets-gcloud.json', value: 'secrets/creds/gcloud-service-account')],
+    cloud: 'kubernetes',
+    label: "test",
+    containers: [
+      containerTemplate(
+        image: 'gcr.io/kaniko-project/executor:debug', name: 'kaniko', workingDir: '/home/jenkins/agent')],
+      serviceAccount: 'vault-auth'
+  ) {
     node ("test") {
-      container("kaniko") {
+      container(name: 'kaniko', shell: '/busybox/sh') {
         checkout scm
-        sh '''
+        sh '''#!/busybox/sh
             /kaniko/executor --context `pwd` --dockerfile `pwd`/Dockerfile --destination gcr.io/jenkins-demo-330307/product-order-service:release-1.0
         '''
       }
