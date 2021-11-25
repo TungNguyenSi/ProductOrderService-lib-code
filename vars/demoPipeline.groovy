@@ -17,7 +17,7 @@ def call() {
 //      }
 //    }
 //  }
-  podTemplate(yaml: """
+  podTemplate(yaml: '''
       apiVersion: v1
       kind: Pod
       metadata:
@@ -39,7 +39,7 @@ def call() {
           - name: GOOGLE_APPLICATION_CREDENTIALS
             value: /vault/secrets/gcloud.json
         restartPolicy: Never
-    """) {
+    ''') {
   }
 
   podTemplate(label: "kubepod", cloud: 'kubernetes', containers: [
