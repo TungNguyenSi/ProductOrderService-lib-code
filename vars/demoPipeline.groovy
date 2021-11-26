@@ -28,7 +28,7 @@ def call() {
       podAnnotation(key: 'vault.hashicorp.com/agent-inject-template-gcloud', value: '| ' +
         '{{- with secret "secrets/creds/gcloud-service-account" -}} ' +
         '  "{{ .Data.data }}"' +
-        '{{- end -}}')
+        '{{- end }}')
     ],
     cloud: 'kubernetes',
     label: "test",
