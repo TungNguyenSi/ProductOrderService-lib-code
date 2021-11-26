@@ -56,7 +56,6 @@ def call() {
       stage("deploy") {
         checkout scm
         k8s.auth()
-        createMongoSecrets(k8s)
         k8s.apply("-f mongo-deploy.yaml")
         k8s.apply("-f product-order-service-deploy.yaml")
 
@@ -70,57 +69,4 @@ def call() {
   }
 }
 
-def createMongoSecrets(K8s k8s){
-  withVault(
-    configuration: [timeout: 60, vaultCredentialId: 'vault-jenkins-approle', vaultUrl: 'http://34.126.70.118:8200'],
-    vaultSecrets: [
-      [path: 'secrets/creds/mongodb', secretValues: [
-        [envVar: 'mongoUser', vaultKey: 'username'],
-        [envVar: 'mongoPassword', vaultKey: 'password']]
-      ],
-    ]) {
-    k8s.createSecretsFromLiteral("mongodb-secret", ["username=\${mongoUser}", "password=\${mongoPassword}"])
-  }
-}
 
-//def kanikoPodTemplate() {
-//  def yamlString = """
-//    |apiVersion: v1
-//    |kind: Pod
-//    |spec:
-//    |  template:
-//    |    metadata:
-//    |      annotations:
-//    |        vault.hashicorp.com/agent-inject: "true"
-//    |        vault.hashicorp.com/role: "webapp"
-//    |        vault.hashicorp.com/agent-inject-secrets-mongodb: "secrets/creds/gcloud-service-account"
-//    |        vault.hashicorp.com/agent-inject-template-mongodb: |
-//    |          {{- with secret "secrets/creds/mongodb" -}}
-//    |            {{ .Data.data }}"
-//    |          {{- end}}
-//    |    spec:
-//    |      containers:
-//    |     - name: kaniko
-//    |        image: gcr.io/kaniko-project/executor:debug
-//    |        imagePullPolicy: Always
-//    |        command:
-//    |        - sleep
-//    |         args:
-//    |        - 9999999
-//    |        env:
-//    |        - name: GOOGLE_APPLICATION_CREDENTIALS
-//    |          value: /vault/secrets/gcloud.json
-//    |""".stripMargin()
-//  return "yaml: $yamlString"
-//}
-
-//  podTemplate(kanikoPodTemplate()) {
-//    node ("test") {
-//      container(name: 'kaniko', shell: '/busybox/sh') {
-//        checkout scm
-//        sh '''#!/busybox/sh
-//            /kaniko/executor --context `pwd` --dockerfile `pwd`/Dockerfile --destination gcr.io/jenkins-demo-330307/product-order-service:release-1.0
-//        '''
-//      }
-//    }
-//  }
