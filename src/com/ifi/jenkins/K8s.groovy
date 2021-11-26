@@ -31,15 +31,12 @@ def apply(String fileName) {
   sh "kubectl apply -f ${fileName}"
 }
 
-def verifyRunningPods(String deploymentName, String statement){
-  def podName = sh (
-    script: "kubectl get pods | grep ${deploymentName} | awk '{print \$1}'",
-    returnStatus: true
-  )
-  def verify = sh(
-    script: "kubectl logs ${podName} ${deploymentName} | grep ${statement}",
+def verifyRunningPods(String deploymentName){
+
+  def ver = sh(
+    script: "kubectl rollout status deployment ${deploymentName} --watch --timeout=3m",
     returnStatus: true
   )
 
-  return verify != ""
+  return ver.contains("successfully")
 }
