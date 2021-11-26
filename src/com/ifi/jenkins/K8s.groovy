@@ -28,5 +28,5 @@ def verifyRunningPods(String deploymentName){
     returnStatus: true
   )
 
-  return ver.contains("successfully")
+  return ver
 }
