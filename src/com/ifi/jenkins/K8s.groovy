@@ -25,8 +25,8 @@ def verifyRunningPods(String deploymentName){
 
   def ver = sh(
     script: "kubectl rollout status deployment ${deploymentName} --watch --timeout=3m",
-    returnStatus: true
+    returnStdout: true
   )
 
-  return ver
+  return ver.contains("successfully")
 }

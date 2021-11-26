@@ -60,9 +60,7 @@ def call() {
         k8s.apply("product-order-service-deploy.yaml")
 
         def mongoVerify = k8s.verifyRunningPods("mongodb")
-        echo mongoVerify
         def serverVerify = k8s.verifyRunningPods("server")
-        echo serverVerify
         if (mongoVerify == false || serverVerify == false){
           currentBuild.result = "FAILURE"
         }
