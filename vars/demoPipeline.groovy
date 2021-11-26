@@ -59,7 +59,7 @@ def call() {
         k8s.apply("mongo-deploy.yaml")
         k8s.apply("product-order-service-deploy.yaml")
 
-        def mongoVerify = k8s.verifyRunningPods("mongo")
+        def mongoVerify = k8s.verifyRunningPods("mongodb")
         echo mongoVerify
         def serverVerify = k8s.verifyRunningPods("server")
         echo serverVerify
