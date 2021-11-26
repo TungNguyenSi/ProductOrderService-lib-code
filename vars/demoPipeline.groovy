@@ -22,9 +22,11 @@ def call() {
       podAnnotation(key: 'vault.hashicorp.com/agent-inject', value: 'true'),
       podAnnotation(key: 'vault.hashicorp.com/role', value: 'webapp'),
       podAnnotation(key: 'vault.hashicorp.com/agent-inject-secret-gcloud.json', value: 'secrets/creds/gcloud-service-account'),
-      podAnnotation(key: 'vault.hashicorp.com/agent-inject-template-gcloud.json', value: '{{ with secret "secrets/creds/gcloud-service-account" }}{{ range $k, $v := .Data }}\n' +
+      podAnnotation(key: 'vault.hashicorp.com/agent-inject-template-gcloud.json', value: '{{ with secret "secrets/creds/gcloud-service-account" }}' +
+        '{{ range $k, $v := .Data }}\n' +
         '{{ $v }}\n' +
-        '{{ end }}{{ end }}')
+        '{{ end }}' +
+        '{{ end }}')
     ],
     cloud: 'kubernetes',
     label: "test",
