@@ -17,9 +17,6 @@ def call() {
 //    }
 //  }
 
-
-
-//  podTemplate(label: "kubepod", cloud: 'kubernetes', containers: [
   podTemplate(
     annotations: [
       podAnnotation(key: 'vault.hashicorp.com/agent-inject', value: 'true'),
@@ -43,31 +40,32 @@ def call() {
     node ("test") {
       container(name: 'kaniko', shell: '/busybox/sh') {
         checkout scm
-//        sh 'echo "{" > temp.json && grep -v "data:" /vault/secrets/gcloud.json >> temp.json && mv temp.json /vault/secrets/gcloud.json'
         sh '''#!/busybox/sh
             /kaniko/executor --context `pwd` --dockerfile `pwd`/Dockerfile --destination gcr.io/jenkins-demo-330307/product-order-service:release-1.0
         '''
       }
     }
   }
-//    containerTemplate(name: 'jnlp', image: 'nstung219/k8s-agent:1.5')
-//  ]) {
-//    node ("kubepod") {
-//      stage("deploy") {
-//        checkout scm
-//        k8s.auth()
-//        createMongoSecrets(k8s)
-//        k8s.apply("-f mongo-deploy.yaml")
-//        k8s.apply("-f product-order-service-deploy.yaml")
-//
-//        def mongoVerify = k8s.verifyRunningPods("mongo")
-//        def serverVerify = k8s.verifyRunningPods("server")
-//        if (mongoVerify == false || serverVerify == false){
-//          currentBuild.result = "FAILURE"
-//        }
-//      }
-//    }
-//  }
+
+  podTemplate(label: "kubepod", cloud: 'kubernetes', containers: [
+    containerTemplate(name: 'jnlp', image: 'nstung219/k8s-agent:1.5')
+  ]) {
+    node ("kubepod") {
+      stage("deploy") {
+        checkout scm
+        k8s.auth()
+        createMongoSecrets(k8s)
+        k8s.apply("-f mongo-deploy.yaml")
+        k8s.apply("-f product-order-service-deploy.yaml")
+
+        def mongoVerify = k8s.verifyRunningPods("mongo")
+        def serverVerify = k8s.verifyRunningPods("server")
+        if (mongoVerify == false || serverVerify == false){
+          currentBuild.result = "FAILURE"
+        }
+      }
+    }
+  }
 }
 
 def createMongoSecrets(K8s k8s){
