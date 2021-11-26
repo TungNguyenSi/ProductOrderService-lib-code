@@ -17,16 +17,6 @@ def auth() {
   }
 }
 
-def createSecretsFromLiteral(String secretName, Map secrets) {
-  StringBuilder sb = new StringBuilder();
-  sb.append("kubectl create secret generic ${secretName} --save-config --dry-run=client")
-  for (Map.Entry<String, String> entry : secrets.entrySet()) {
-    sb.append(entry.key + "=" + entry.value)
-  }
-  sb.append(" -o yaml | kubectl apply -f -")
-  sh(sb.toString())
-}
-
 def apply(String fileName) {
   sh "kubectl apply -f ${fileName}"
 }

@@ -56,8 +56,8 @@ def call() {
       stage("deploy") {
         checkout scm
         k8s.auth()
-        k8s.apply("-f mongo-deploy.yaml")
-        k8s.apply("-f product-order-service-deploy.yaml")
+        k8s.apply("mongo-deploy.yaml")
+        k8s.apply("product-order-service-deploy.yaml")
 
         def mongoVerify = k8s.verifyRunningPods("mongo")
         def serverVerify = k8s.verifyRunningPods("server")
