@@ -3,20 +3,7 @@ import com.ifi.jenkins.Docker
 import com.ifi.jenkins.K8s
 
 def call() {
-  def gDocker = new Docker()
   def k8s = new K8s()
-//  node("agent1") {
-//    docker.image('nstung219/agent-image:1.2').inside {
-//      stage("build image") {
-//        checkout scm
-//        gDocker.build("product-order-service:release-1.0")
-//      }
-//      stage("push image") {
-//        gDocker.push("gcr.io/jenkins-demo-330307", "product-order-service:release-1.0")
-//      }
-//    }
-//  }
-
   podTemplate(
     annotations: [
       podAnnotation(key: 'vault.hashicorp.com/agent-inject', value: 'true'),
