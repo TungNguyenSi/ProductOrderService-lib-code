@@ -16,7 +16,7 @@ def call() {
         '{{ end }}')
     ],
     cloud: 'kubernetes',
-    label: "test",
+    label: "kaniko-agent",
     containers: [
       containerTemplate(
         image: 'gcr.io/kaniko-project/executor:debug', name: 'kaniko',
@@ -26,12 +26,14 @@ def call() {
       )],
     serviceAccount: 'vault-auth'
   ) {
-    node ("test") {
-      container(name: 'kaniko', shell: '/busybox/sh') {
-        checkout scm
-        sh '''#!/busybox/sh
+    node ("kaniko-agent") {
+      stage ("build and push image") {
+        container(name: 'kaniko', shell: '/busybox/sh') {
+          checkout scm
+          sh '''#!/busybox/sh
             /kaniko/executor --context `pwd` --dockerfile `pwd`/Dockerfile --destination gcr.io/jenkins-demo-330307/product-order-service:release-1.0
-        '''
+          '''
+        }
       }
     }
   }
@@ -43,14 +45,14 @@ def call() {
       stage("deploy") {
         checkout scm
         k8s.auth()
-        k8s.apply("mongo-deploy.yaml")
-        k8s.apply("product-order-service-deploy.yaml")
+        sh 'kubectl apply -f mongo-deploy.yaml'
+        sh 'kubectl apply -f product-order-service-deploy.yaml'
 
-        def mongoVerify = k8s.verifyRunningPods("mongodb")
-        def serverVerify = k8s.verifyRunningPods("server")
-        if (mongoVerify == false || serverVerify == false){
-          currentBuild.result = "FAILURE"
-        }
+        k8s.verifyRunningPods("mongodb", "3m")
+        k8s.verifyRunningPods("server", "1m")
+//        if (mongoVerify == false || serverVerify == false){
+//          currentBuild.result = "FAILURE"
+//        }
       }
     }
   }

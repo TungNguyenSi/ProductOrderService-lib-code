@@ -8,7 +8,6 @@ def auth() {
         [envVar: 'gcloudAccount', vaultKey: 'data']]
       ]
     ]) {
-    // some block
     writeFile(file: 'keyFile.json', text: gcloudAccount)
     sh '''
       gcloud auth activate-service-account --key-file keyFile.json
@@ -16,17 +15,8 @@ def auth() {
     '''
   }
 }
-
-def apply(String fileName) {
-  sh "kubectl apply -f ${fileName}"
-}
-
-def verifyRunningPods(String deploymentName){
-
-  def ver = sh(
-    script: "kubectl rollout status deployment ${deploymentName} --watch --timeout=3m",
-    returnStdout: true
+def verifyRunningPods(String deploymentName, String timeout){
+  sh(
+    script: "kubectl rollout status deployment ${deploymentName} --watch --timeout=${timeout}",
   )
-
-  return ver.contains("successfully")
 }
