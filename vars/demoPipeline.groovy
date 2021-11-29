@@ -48,8 +48,8 @@ def call() {
         sh 'kubectl apply -f mongo-deploy.yaml'
         sh 'kubectl apply -f product-order-service-deploy.yaml'
 
-        k8s.verifyRunningPods("mongodb", "3m")
-        k8s.verifyRunningPods("server", "1m")
+        k8s.verifyRunningPods("mongodb", "1m")
+        k8s.verifyRunningPods("server", "3m")
       }
     }
   }
