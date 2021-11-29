@@ -50,9 +50,6 @@ def call() {
 
         k8s.verifyRunningPods("mongodb", "3m")
         k8s.verifyRunningPods("server", "1m")
-//        if (mongoVerify == false || serverVerify == false){
-//          currentBuild.result = "FAILURE"
-//        }
       }
     }
   }
